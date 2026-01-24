@@ -11,7 +11,7 @@
 #define LED 2
 
 static const String TRAIN_NAME = "RhB Ge 6/6"; // Anpassen
-static const uint32_t TRAIN_ID = 0x47362F36; // Anpassen "G6/6" in Hex
+static const uint32_t TRAIN_ID = 0x47362F36; // Anpassen: "G6/6" in Hex max. 4 Bytes
 static const uint32_t BEACON_INTERVAL_MS = 500;
 
 static const bool    USE_FIXED_CHANNEL = true;
