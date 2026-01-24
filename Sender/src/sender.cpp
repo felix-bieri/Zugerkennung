@@ -83,8 +83,6 @@ void loop() {
   if (now - g_lastSend >= BEACON_INTERVAL_MS) {
     g_lastSend = now;
 
-    digitalWrite(LED, (digitalRead(LED) == LOW) ? HIGH : LOW);
-
     BeaconPacket pkt{};
     pkt.train_id  = TRAIN_ID;
     pkt.seq       = g_seq++;
@@ -92,11 +90,13 @@ void loop() {
 
     esp_err_t res = esp_now_send(BROADCAST_ADDR, (uint8_t*)&pkt, sizeof(pkt));
     if (res == ESP_OK) {
+      digitalWrite(LED, (digitalRead(LED) == LOW) ? HIGH : LOW);
       Serial.printf("Beacon sent: ID=%08lX Seq=%lu\n",
                     (unsigned long)pkt.train_id,
                     (unsigned long)pkt.seq);
     } else {
       Serial.printf("Send error: %d (%s)\n", (int)res, esp_err_to_name(res));
+      digitalWrite(LED, LOW);
     }
   }
 }
