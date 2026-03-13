@@ -1,1 +1,1 @@
-idf_component_register(SRCS "empfaenger.cpp")
+idf_component_register(SRCS "receiver.cpp")

@@ -1,1 +1,1 @@
-idf_component_register(SRCS "sender.cpp")
+idf_component_register(SRCS "beacon.cpp")
