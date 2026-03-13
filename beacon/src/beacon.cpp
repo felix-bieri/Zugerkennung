@@ -10,12 +10,12 @@
 
 #define LED 2
 
-static const String TRAIN_NAME = "RhB Ge 6/6"; // Anpassen
-static const uint32_t TRAIN_ID = 0x47362F36; // Anpassen: "G6/6" in Hex max. 4 Bytes
+static const String TRAIN_NAME = "RhB Ge 6/6"; // change
+static const String TRAIN_ID = "G6/6"; // change, must be exactly 4 characters
 static const uint32_t BEACON_INTERVAL_MS = 500;
 
-static const bool    USE_FIXED_CHANNEL = true;
-static const uint8_t FIXED_CHANNEL     = 6;
+static const bool USE_FIXED_CHANNEL = true;
+static const uint8_t FIXED_CHANNEL = 6;
 static const wifi_power_t TX_POWER = WIFI_POWER_19_5dBm;
 
 static uint8_t BROADCAST_ADDR[6] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
@@ -84,15 +84,18 @@ void loop() {
     g_lastSend = now;
 
     BeaconPacket pkt{};
-    pkt.train_id  = TRAIN_ID;
+    pkt.train_id  = ((uint32_t)(uint8_t)TRAIN_ID[0] << 24) |
+                    ((uint32_t)(uint8_t)TRAIN_ID[1] << 16) |
+                    ((uint32_t)(uint8_t)TRAIN_ID[2] <<  8) |
+                     (uint32_t)(uint8_t)TRAIN_ID[3];
     pkt.seq       = g_seq++;
     pkt.uptime_ms = now;
 
     esp_err_t res = esp_now_send(BROADCAST_ADDR, (uint8_t*)&pkt, sizeof(pkt));
     if (res == ESP_OK) {
       digitalWrite(LED, (digitalRead(LED) == LOW) ? HIGH : LOW);
-      Serial.printf("Beacon sent: ID=%08lX Seq=%lu\n",
-                    (unsigned long)pkt.train_id,
+      Serial.printf("Beacon sent: ID=%s Seq=%lu\n",
+                    TRAIN_ID.c_str(),
                     (unsigned long)pkt.seq);
     } else {
       Serial.printf("Send error: %d (%s)\n", (int)res, esp_err_to_name(res));
